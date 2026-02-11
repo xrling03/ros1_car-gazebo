@@ -1,0 +1,3 @@
+Frame:map, Position(3.736, 0.973, 0.000), Orientation(0.000, 0.000, 0.712, 0.702) = Angle: 1.584
+Frame:map, Position(2.319, 1.464, 0.000), Orientation(0.000, 0.000, 0.709, 0.705) = Angle: 1.576
+Frame:map, Position(0.698, 1.109, 0.000), Orientation(0.000, 0.000, 0.701, 0.713) = Angle: 1.554
