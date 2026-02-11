@@ -1,0 +1,57 @@
+<launch>
+
+  <!-- Run the map server -->
+  <!-- <include file="$(find ucar_controller)/launch/base_driver.launch" /> -->
+
+  <!-- <include file="$(find ydlidar)/launch/ydlidar.launch" /> -->
+
+  <node name="map_server" pkg="map_server" type="map_server" 
+        args="$(find gazebo_pkg)/config/7_10.yaml" output="screen">
+    <param name="frame_id" value="map" />
+  </node> 
+
+  <!-- 全局规划器参数（若启用，移除注释并修正格式） -->
+  <!-- <param name="base_global_planner" value="voronoi_planner/VoronoiPlanner"/> -->
+
+  <!-- <include file="$(find usb_cam)/launch/usb_cam-test.launch" /> -->
+
+  <include file="$(find ucar_nav)/launch/config/amcl/amcl_omni.launch" />
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <!-- 全局规划器配置（移除多余的 --> 
+    <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+    <!-- 局部规划器配置（移除多余的 --> 
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+    
+    <!-- 加载代价地图和规划器参数 -->
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/global_planner_params.yaml" command="load" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/teb_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find ucar_nav)/launch/config/move_base/move_base_params.yaml" command="load" />
+
+    <!-- 可选：运动控制参数（若启用，取消注释） -->
+    <!--
+    <param name="planner_frequency" value="0"/>
+    <param name="planner_patience" value="0"/>
+    <param name="controller_frequency" value="0.1"/>
+    <param name="controller_patience" value="1.0"/>
+    <param name="clearing_rotation_allowed" value="false"/>
+    -->
+  </node>
+
+  <!-- 修正节点名称的等号 -->
+  <!-- <node pkg="jie_ware" type="costmap_cleaner" name="costmap_cleaner" /> -->
+
+  <!-- 可选：加载额外导航参数（若启用，取消注释） -->
+  <!-- <rosparam command="load" file="$(find ucar_nav)/launch/config/move_base/my_navigation.yaml"/> -->
+
+  <!-- 可选：启动RViz（若启用，取消注释） -->
+  <!--
+  <node pkg="rviz" type="rviz" name="rviz" required="true"
+        args="-d $(find ucar_nav)/launch/config/rviz/tebrviz.rviz"/>
+  -->
+
+</launch>

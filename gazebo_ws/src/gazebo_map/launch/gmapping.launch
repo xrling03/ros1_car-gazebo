@@ -1,0 +1,59 @@
+<launch>
+    <!-- 
+    GMapping SLAM 节点配置
+    用于将激光雷达数据转换为二维栅格地图
+    -->
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="log" clear_params="true">
+        
+        <!-- 基础框架设置 -->
+        <param name="odom_frame" value="odom"/>  <!-- 里程计坐标系名称 -->
+        
+        <!-- 地图更新参数 -->
+        <param name="map_update_interval" value="0.5"/>  <!-- 地图更新间隔(秒) -->
+        
+        <!-- 激光雷达参数 -->
+        <param name="maxRange" value="5.0"/>     <!-- 激光雷达最大有效测量范围(米) -->
+        <param name="maxUrange" value="4.5"/>    <!-- 用于建图的最大距离(应略小于maxRange) -->
+        
+        <!-- 扫描匹配参数 -->
+        <param name="sigma" value="0.1"/>       <!-- 扫描匹配优化标准差 -->
+        <param name="kernelSize" value="1"/>      <!-- 搜索核大小 -->
+        <param name="lstep" value="0.05"/>       <!-- 平移优化步长 -->
+        <param name="astep" value="0.05"/>       <!-- 旋转优化步长 -->
+        <param name="iterations" value="10"/>     <!-- 扫描匹配迭代次数 -->
+        <param name="lsigma" value="0.075"/>     <!-- 似然计算的标准差 -->
+        <param name="ogain" value="3.0"/>        <!-- 障碍物影响增益 -->
+        <param name="lskip" value="0"/>          <!-- 跳过的激光束数(0=不跳过) -->
+        
+        <!-- 里程计误差参数 -->
+        <param name="srr" value="0.01"/>         <!-- 平移-平移误差系数 -->
+        <param name="srt" value="0.02"/>         <!-- 平移-旋转误差系数 -->
+        <param name="str" value="0.01"/>         <!-- 旋转-平移误差系数 -->
+        <param name="stt" value="0.02"/>         <!-- 旋转-旋转误差系数 -->
+        
+        <!-- 更新阈值 -->
+        <param name="linearUpdate" value="0.35"/>  <!-- 最小线性位移触发更新(米) -->
+        <param name="angularUpdate" value="0.30"/><!-- 最小角度位移触发更新(弧度) -->
+        <param name="temporalUpdate" value="-1.0"/><!-- 时间触发更新(秒，-1=禁用) -->
+        
+        <!-- 粒子滤波参数 -->
+        <param name="resampleThreshold" value="0.5"/><!-- 重采样阈值 -->
+        <param name="particles" value="50"/>      <!-- 粒子数量(典型值30-100) -->
+        
+        <!-- 地图尺寸参数 -->
+        <param name="xmin" value="-1.0"/>         <!-- 地图最小X坐标(米) -->
+        <param name="ymin" value="-1.0"/>         <!-- 地图最小Y坐标(米) -->
+        <param name="xmax" value="1.0"/>          <!-- 地图最大X坐标(米) -->
+        <param name="ymax" value="1.0"/>          <!-- 地图最大Y坐标(米) -->
+        <param name="delta" value="0.03"/>        <!-- 地图分辨率(米/格) -->
+        
+        <!-- 采样范围参数 -->
+        <param name="llsamplerange" value="0.01"/> <!-- 似然采样距离范围 -->
+        <param name="llsamplestep" value="0.01"/>  <!-- 似然采样步长 -->
+        <param name="lasamplerange" value="0.005"/> <!-- 角度采样范围 -->
+        <param name="lasamplestep" value="0.005"/> <!-- 角度采样步长 -->
+        
+        <!-- 可选的topic重映射示例 -->
+        <!-- <remap from="scan" to="custom_scan_topic"/> -->
+    </node>
+</launch>

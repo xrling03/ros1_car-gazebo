@@ -1,0 +1,88 @@
+TebLocalPlannerROS:
+  # 轨迹规划参数
+  teb_autosize: True  # 自动调整轨迹长度，根据障碍物分布动态优化
+  dt_ref: 0.3         # 参考时间步长(s)，减小可提高轨迹精度但增加计算负担
+  dt_hysteresis: 0.1  # 时间步长滞后，避免频繁调整
+  max_samples: 60    # 最大采样数，增加可扩大搜索空间但降低实时性
+  global_plan_overwrite_orientation: True  # 覆盖全局规划的朝向，使用局部优化结果
+  allow_init_with_backwards_motion: False  # 禁止初始后退运动，可改为True增加灵活性
+  max_global_plan_lookahead_dist: 1.0      # 全局规划前瞻距离(m)，减小可提高局部避障能力
+  global_plan_viapoint_sep: 0.2             # 路径点间隔(m)，减小可提高路径跟踪精度
+  global_plan_prune_distance: 1           # 已通过路径的修剪距离(m)
+  exact_arc_length: True                  # 精确计算弧长，提高路径长度估计精度
+  feasibility_check_no_poses: 5           # 可行性检查的位姿数，增加可提高安全性
+  publish_feedback: False                 # 不发布规划反馈以减少网络负载
+
+  # 机器人动力学约束
+  max_vel_x: 3.0          # 最大线速度(m/s)，建议降低至1.5以提高稳定性
+  max_vel_x_backwards: 0.5  # 最大后退速度(m/s)
+  max_vel_y: 0.3         # 最大横向速度(m/s)，建议降低至1.5
+  max_vel_theta: 2.5      # 最大角速度(rad/s)，建议降低至2.0
+  acc_lim_x: 0.5          # 线加速度限制(m/s²)，建议增加至0.3-0.5
+  acc_lim_y: 0.1          # 横向加速度限制(m/s²)，建议增加至0.3-0.5
+  acc_lim_theta: 0.5      # 角加速度限制(rad/s²)，建议增加至0.3-0.5
+  min_turning_radius: 0.0 # 最小转弯半径(m)，0表示全向移动机器人
+
+  # 机器人外形模型
+  footprint_model:
+    type: "polygon"         # 多边形模型更精确表示机器人外形
+    vertices: [[0.171, -0.128], [0.171, 0.128], [-0.171, 0.128], [-0.171, -0.128]]  # 矩形顶点
+
+  # 目标容差参数
+  xy_goal_tolerance: 0.25   # 位置容差(m)
+  yaw_goal_tolerance: 0.15  # 朝向容差(rad)
+  free_goal_vel: False      # 到达目标时是否允许非零速度
+  complete_global_plan: True  # 是否强制完成全局规划，可能导致局部振荡
+
+  # 障碍物处理参数
+  min_obstacle_dist: 0.05   # 最小障碍物距离(m)，需包含机器人半径
+  inflation_dist: 0.05      # 障碍物膨胀距离(m)，建议增加至0.5-0.6提高安全性
+  include_costmap_obstacles: True  # 包含代价地图中的障碍物
+  costmap_obstacles_behind_robot_dist: 1.0  # 考虑后方障碍物的距离(m)
+  obstacle_poses_affected: 8     # 受障碍物影响的位姿数
+  costmap_converter_plugin: ""    # 未使用代价地图转换器
+  costmap_converter_spin_thread: True  # 转换器独立线程
+  costmap_converter_rate: 5       # 转换器更新频率(Hz)
+
+  # 优化参数
+  no_inner_iterations: 5          # 内部迭代次数，建议增加至8提高优化质量
+  no_outer_iterations: 4          # 外部迭代次数，建议增加至7提高优化质量
+  optimization_activate: True     # 启用轨迹优化
+  optimization_verbose: False     # 禁用详细输出，减少日志负担
+  penalty_epsilon: 0.1            # 惩罚函数阈值
+  obstacle_cost_exponent: 2       # 障碍物代价指数，建议降低至2-3
+  weight_max_vel_x: 70            # x方向速度权重，建议降低至40-50
+  weight_max_vel_y: 40            # y方向速度权重
+  weight_max_vel_theta: 45        # 角速度权重，建议降低至30-40
+  weight_acc_lim_x: 2             # x方向加速度权重
+  weight_acc_lim_y: 1             # y方向加速度权重
+  weight_acc_lim_theta: 2         # 角加速度权重
+  weight_kinematics_nh: 1         # 全向运动惩罚权重
+  weight_kinematics_forward_drive: 0  # 前向驱动惩罚权重，全向机器人设为0
+  weight_kinematics_turning_radius: 20  # 转弯半径惩罚权重
+  weight_optimaltime: 2.0         # 时间最优权重
+  weight_shortest_path: 0.1       # 最短路径权重
+  weight_obstacle: 30            # 障碍物代价权重，建议降低至80-90
+  weight_inflation: 0.1          # 障碍物膨胀代价权重
+  weight_dynamic_obstacle: 10     # 动态障碍物代价权重
+  weight_dynamic_obstacle_inflation: 0.2  # 动态障碍物膨胀代价权重
+  weight_viapoint: 5              # 路径点跟踪权重
+  weight_adapt_factor: 0.9          # 自适应权重因子
+
+  # 同伦类路径规划器参数
+  enable_homotopy_class_planning: False  # 禁用多路径规划，简化计算
+  enable_multithreading: True            # 启用多线程加速
+  max_number_classes: 1                  # 最多考虑的路径类数
+  selection_cost_hysteresis: 4.0         # 路径选择滞后因子
+  selection_prefer_initial_plan: 1.0     # 优先选择初始规划路径
+  selection_obst_cost_scale: 0.8         # 障碍物代价缩放因子
+  selection_alternative_time_cost: False  # 不考虑替代路径的时间代价
+
+  # 恢复行为参数
+  shrink_horizon_backup: True  # 遇到困难时收缩规划时域
+  shrink_horizon_min_duration: 10  # 最小收缩持续时间(s)
+  oscillation_recovery: False  # 禁用振荡检测和恢复，建议启用(True)
+  oscillation_v_eps: 0.1       # 线速度振荡阈值(m/s)
+  oscillation_omega_eps: 0.1   # 角速度振荡阈值(rad/s)
+  oscillation_recovery_min_duration: 10  # 振荡恢复最小持续时间(s)
+  oscillation_filter_duration: 10  # 振荡过滤窗口大小(s)
