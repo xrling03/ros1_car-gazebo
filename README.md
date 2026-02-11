@@ -1,2 +1,2 @@
-# -xr-learning-project
+# learning-project
 Hello my Git
